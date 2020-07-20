@@ -66,13 +66,11 @@ std::ostream& operator << (std::ostream& output,Comb comb){ //overload extractio
     return output;
 }
 
-vector<char>& operator [] (vector<char> a, Comb comb){
+
+Comb& Comb::operator [] (vector<Comb> a){
    for(auto i = a.begin(); i != a.end(); i++){
-    for(auto j = i + 1; j != j.end(); j++){
-      a[i][j] = comb.getChar() + comb.getChar();
-     return a;
+     return a[i];
     }
-   }
 }
 
 int main(){
@@ -85,6 +83,13 @@ int main(){
     for(char j = i+1; j <= 'z'; j++){
     array.push_back(Comb(i, j, 4, charArray)); 
    }     
+  }
+
+  for(auto i = array.begin(); i != array.end(); i++){
+   for(auto j = i + 1; j != array.end(); j++){
+     charArray.push_back(array[i]);
+     
+    }
   }
   /*
   for(auto i = array.begin(); i != array.end(); i++){
