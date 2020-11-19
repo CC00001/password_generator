@@ -23,13 +23,15 @@ vector<string> make_permutations(int length, int num){
     }
   }
   
-  for(int i = 0; i < num; i++){
+  for(int i = 0; i < num; i++){ //Integer implentation
    numbers.emplace_back(i);
-   for(int j = i + 1; j < num; j++){
-     numbers.push_back(j);    
-   }
-  }
- 
+   swap(numbers[i], numbers[i+1]);
+   make_permutations(length - 1, num);
+   swap(numbers[i], numbers[i+1]);
+   //for(int j = i + 1; j < num; j++){
+     //numbers.push_back(j);    
+   //}
+  } 
   for(auto n : numbers){
    ss << numbers[n];
   
@@ -44,7 +46,7 @@ int main()
 {
  ofstream output;
   output.open("wordlist.lst");
- auto results = make_permutations(3, 3);
+ auto results = make_permutations(5, 4);
     for(auto s : results){ 
       cout << s << endl;
       output << s << "\n";
