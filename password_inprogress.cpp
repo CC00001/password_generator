@@ -4,101 +4,88 @@
 #include <fstream>
 using namespace std;
 
+template<typename A, typename L>
+vector<A> make_permutation(const vector<A> array, L len){
+ if(len == 0) return array;
+ vector<A> results = make_permutation(array, len - 1);
+ vector<A> temp;
+ for(L i = 0; i <= array.size(); i++){
+  temp.push_back(i);
+ 
+ for(auto r : results){
+  results.push_back(i + r);	  
+  }
+ }
+ return results;
+}
+
 class Comb{
 private:
- char character;
- int number;
- int digit;
- vector<char> charArr;
+ vector<char>character;
+ int* number;
+ int lengthChar, lengthNum;
 
 public:
  Comb(){ //Default constructor
-  character = ' ';
-  number = 0;
-  digit = 0;
-  vector<char> charArr {}; //Define empty vector by using {}
+  //character = new char[lengthChar];
+  number = new int[lengthNum];
  }
  
- Comb(const char &c, int n, int d, vector<char> &ca){ //Constructor with paramters
-  character = c;
-  number = n;
-  digit = n;
-  charArr = ca;
+ Comb(const int lc, const int ln){ //Constructor with paramters
+  lengthChar = lc;
+  lengthNum = ln;
  }
 
- Comb(const Comb &passwd){ //Constructor with generic datatype
-  character = passwd.character;
-  number = passwd.number;
-  digit = passwd.digit;
-  charArr = passwd.charArr;
- }
-
- Comb operator = (const Comb &passwd){ //equal operator overload Comb datatype
-  if(&passwd == this){
-   return *this;
+  //Method: Set comb of passwords
+ void setPasswd(const int lengthChar, const int lengthNum){
+  vector<char> tempChar;
+  vector<int> tempNum;
+  for(char c = 'a'; c <= 'z'; c++){
+   tempChar.emplace_back(c);
   }
-  character = passwd.character;
-  number = passwd.number;
-  digit = passwd.digit;
-  charArr = passwd.charArr;
-  return *this;
- }
-  
- //Method: Set comb of passwords
- void setPasswd(const char &c, int n, int d, vector<char> &ca){
-  character = c;
-  number = n;
-  digit = d;
-  charArr = ca;
+  character = make_permutation(tempChar, lengthChar);
+  for(int i = 0; i < lengthNum; i++){
+   for(int j = i+1; j < lengthNum; j++){
+    tempNum.push_back(i+j);
+   }
+  }
+  for(int i = 0; i <= lengthNum; i++){
+   if(tempNum[0]/tempNum.size() == lengthNum)
+    number[i] = tempNum[i];
+  }
  }
 
- char getChar(){
-  return character;
- }
-
- int getNum(){
-  return number;
- }
+ void printComb(){
+  for(int i = 0; i <= sizeof(character); i++){
+   for(int j = 0; j <= number[0]/sizeof(number); j++){ 
+    std::cout << character[i] << number[j] << endl;
+   }
+  }
+ } 
 };
 
-std::ostream& operator << (std::ostream& output,Comb comb){ //overload extraction operator(it must be decleared before int main() )
+/*std::ostream& operator << (std::ostream& output,Comb comb){ //overload extraction operator(it must be decleared before int main() )
     output << comb.getChar() << comb.getNum() << " ";
     return output;
 }
+*/
 
-
-Comb& Comb::operator [] (vector<Comb> a){
+/*Comb& Comb::operator [] (vector<Comb> a){
    for(auto i = a.begin(); i != a.end(); i++){
      return a[i];
     }
-}
+}*/
 
 int main(){
    ofstream o;
    o.open("password.txt");
    vector<Comb> array;  
-   vector<char> charArray;
+   Comb comb;
+  
+   comb.setPasswd(3, 3);
+   comb.printComb(); 
 
-   for(char i = 'a'; i <= 'z'; i++){
-    for(char j = i+1; j <= 'z'; j++){
-    array.push_back(Comb(i, j, 4, charArray)); 
-   }     
-  }
+   o.close();
 
-  for(auto i = array.begin(); i != array.end(); i++){
-   for(auto j = i + 1; j != array.end(); j++){
-     charArray.push_back(array[i]);
-     
-    }
-  }
-  /*
-  for(auto i = array.begin(); i != array.end(); i++){
-   for(auto j = i + 1; j != array.end(); j++){
-	cout << array[i][j] << endl;
-      }
-    }
-   */
-  //o.close();
- 
  return 0;
 }
