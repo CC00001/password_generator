@@ -1,23 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <fstream>
 
-//template<typename A, typename L>
-//vector<A> make_permutation(const vector<A> array, L len){
-// if(len == 0) return array;
-// vector<A> results = make_permutation(array, len - 1);
-// vector<A> temp;
-// for(L i = 0; i <= array.size(); i++){
-//  temp.push_back(i);
-// 
-// for(auto r : results){
-//  results.push_back(i + r);	  
-//  }
-// }
-// return results;
-//}
-//
 class Comb{
 private:
  std::vector<char> charArray;
@@ -61,13 +45,42 @@ template<typename A>
   void insertArray(int n){
    return array.push_back(n);
   }
+
+  std::vector<std::vector<char>> convertChar(const std::vector<std::vector<int>> &iArray){
+   const size_t size = iArray[0].size(); //get the size of 1st element of outer array
+   std::vector<std::vector<char>> results; //create a new 2d vector
+   results.reserve(size); //reserve the space for the new 2d vector
+   for(auto &fv : iArray){ //iterate outter loop of iArray
+    std::vector<char> rawVec; //create a new 1d vecotr
+    rawVec.reserve(size); //reserve the space for the new 1d vector
+     for(auto &sv : fv){ //iterate inner loop of iArray
+      rawVec.emplace_back(static_cast<char>(sv) + '0'); //store elements with type casting to char after add a '0' terminator at the end of every single elments of inner loop
+    }
+    results.emplace_back(rawVec); //store inner elements to outter loop of the new 2d vector     
+   }
+   return results;
+  }
+
+   std::vector<std::vector<char>> mergeComb(const std::vector<std::vector<char>> &a, const std::vector<std::vector<int>> &b){
+   std::vector<std::vector<char>> results;
+   std::vector<std::vector<char>> tempA = a;
+   std::vector<std::vector<char>> tempB = convertChar(b);
+   results.reserve(tempA.size() + tempB.size());
+    for(auto &r : {std::cref(tempA), std::cref(tempB)}){
+     results.insert(results.end(), r.get().begin(), r.get().end());
+    }
+    //permutation(results);
+     //results.insert(*it.size() - 1, std::make_move_iterator(tempB.begin()), std::make_move_iterator(tempB.end()));
+    return results;
+   }
+
 template<typename A>
  void printComb(const std::vector<std::vector<A>>& v){
-  for(int i = 0; i < v.size(); i++){
-   for(int j = 0; j < v[i].size(); j++){
+  for(A i = 0; i < v.size(); i++){
+   for(A j = 0; j < v[i].size(); j++){
    std::cout << v[i][j];
    }
-  std::cout << std::endl;
+   std::cout << std::endl;
   }
  }
 };
@@ -86,16 +99,18 @@ int main(){
    std::vector<int> newArray;
    std::vector<std::vector<int>> secArray;
    std::vector<std::vector<char>> sCharArray;
+   std::vector<std::vector<char>> results;
    for(char c = 'a'; c <= 'd'; c++){
     cArray.push_back(c);
    }
    for(int i = 0; i <= 3; i++){
     newArray.push_back(i);
    }
-   sCharArray = comb.permutation(cArray);
    secArray = comb.permutation(newArray);
-   comb.printComb(sCharArray);
-   comb.printComb(secArray); 
+   sCharArray = comb.permutation(cArray);
+   //sCharArray = comb.convertChar(secArray);
+   //results = comb.mergeComb(sCharArray, secArray);
+   comb.printComb(comb.mergeComb(sCharArray, secArray)); 
 
    o.close();
 
